@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 /**
     The uniq utility reads the specified input_file comparing adjacent lines, and
@@ -11,6 +12,8 @@
     will not be detected if they are not adjacent, so it may be necessary to sort
     the files first.
  */
+
+#define MAX_BUFFER_SIZE 256
 
 int main(int argc, char *argv[])
 {
@@ -48,4 +51,21 @@ int main(int argc, char *argv[])
             exit(-1);
         }
     }
+    else
+        input_file = stdin;
+
+    char buffer_prev[MAX_BUFFER_SIZE];
+    char buffer_curr[MAX_BUFFER_SIZE];
+
+    fgets(buffer_prev, MAX_BUFFER_SIZE, input_file);
+    while (fgets(buffer_curr, MAX_BUFFER_SIZE, input_file) != NULL)
+    {
+        if (strcmp(buffer_prev, buffer_curr) != 0)
+            printf("%s", buffer_prev);
+
+        strcpy(buffer_prev, buffer_curr);
+    }
+
+    if (input_file != NULL)
+        fclose(input_file);
 }
