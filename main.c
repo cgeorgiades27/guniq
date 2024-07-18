@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+/**
+    The uniq utility reads the specified input_file comparing adjacent lines, and
+    writes a copy of each unique input line to the output_file.  If input_file is a
+    single dash (‘-’) or absent, the standard input is read.  If output_file is
+    absent, standard output is used for output.  The second and succeeding copies
+    of identical adjacent input lines are not written.  Repeated lines in the input
+    will not be detected if they are not adjacent, so it may be necessary to sort
+    the files first.
+ */
+
+int main(int argc, char *argv[])
+{
+    int c, count;
+    FILE *input_file = NULL;
+
+    while ((c = getopt(argc, argv, "-c")) != -1)
+    {
+        switch (c)
+        {
+        case '-':
+            input_file = stdin;
+            break;
+        case 'c':
+            count = 1;
+            break;
+        case '?':
+            printf("illegal option: %c\n", optopt);
+        default:
+            break;
+        }
+    }
+
+    if (optind < argc)
+    {
+        if (input_file != NULL)
+        {
+            printf("error: cannot read from both stdin and file\n");
+            return 1;
+        }
+        input_file = fopen(argv[optind], "r");
+        if (input_file == NULL)
+        {
+            perror("unable to open file");
+            exit(-1);
+        }
+    }
+}
