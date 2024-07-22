@@ -56,15 +56,24 @@ int main(int argc, char *argv[])
 
     char buffer_prev[MAX_BUFFER_SIZE];
     char buffer_curr[MAX_BUFFER_SIZE];
+    int dupe_count = 1;
 
     fgets(buffer_prev, MAX_BUFFER_SIZE, input_file);
     while (fgets(buffer_curr, MAX_BUFFER_SIZE, input_file) != NULL)
     {
         if (strcmp(buffer_prev, buffer_curr) != 0)
-            printf("%s", buffer_prev);
+        {
+            count ? printf("%d %s", dupe_count, buffer_prev) : printf("%s", buffer_prev);
+            dupe_count = 1;
+        }
+        else
+            dupe_count++;
 
         strcpy(buffer_prev, buffer_curr);
     }
+
+    if (dupe_count > 1)
+        count ? printf("%d %s", dupe_count, buffer_prev) : printf("%s", buffer_prev);
 
     if (input_file != NULL)
         fclose(input_file);
